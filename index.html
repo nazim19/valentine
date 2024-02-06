@@ -16,47 +16,50 @@
             margin-top: 50px;
         }
         
-        #buttons {
+        #gif-container {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .gif {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            /* Initially displayed */
         }
         
         .button {
             font-size: 18px;
             padding: 10px 20px;
-            margin: 0 10px;
+            margin: 5px;
             cursor: pointer;
             border: none;
             border-radius: 5px;
             transition: all 0.3s ease;
+            max-width: 90%;
+            word-wrap: break-word;
         }
         
         #yes {
             background-color: green;
             color: white;
-            position: relative;
-            /* Added position relative */
-            z-index: 1;
-            /* Added z-index */
         }
         
         #no {
             background-color: red;
             color: white;
         }
-        
-        .divContainer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 100px;
-        }
     </style>
 </head>
 
 <body>
     <div id="message">Will you be my valentine, Aprajita?</div>
-    <img src="https://i.pinimg.com/originals/c5/0a/c9/c50ac977b8a89140fc3f7bcb1a05e146.gif" autoplay loop alt="Cute GIF" width="300">
-    <div id="buttons" class="divContainer">
+    <div id="gif-container">
+        <img id="default-gif" src="https://i.pinimg.com/originals/c5/0a/c9/c50ac977b8a89140fc3f7bcb1a05e146.gif" class="gif" alt="Cute GIF" width="300" autoplay loop>
+        <img id="yes-gif" src="https://c.tenor.com/cOjBPqUGt4MAAAAC/bear-hug.gif" class="gif" alt="Another Cute GIF" width="300" autoplay loop>
+    </div>
+    <div id="buttons">
         <button id="yes" class="button">Yes</button>
         <button id="no" class="button">No</button>
     </div>
@@ -67,6 +70,10 @@
         const noButton = document.getElementById("no");
         const yesButton = document.getElementById("yes");
         const message = document.getElementById("message");
+        const defaultGif = document.getElementById("default-gif");
+        const yesGif = document.getElementById("yes-gif");
+
+        yesGif.style.display = "none"
 
         noButton.addEventListener("click", function() {
             noClicks++;
@@ -84,13 +91,26 @@
                 noButton.innerText = "You're breaking my heart";
             }
 
-            yesButton.style.transform = `scale(${1.5 + noClicks * 0.3})`;
+            yesButton.style.transform = `scale(${1.5 + noClicks * 0.1})`;
+
+            // Check if the button is going out of the frame
+            const yesButtonRect = yesButton.getBoundingClientRect();
+            if (yesButtonRect.bottom > window.innerHeight) {
+                // If yes button is about to go out of the frame, move it down
+                const marginTop = yesButtonRect.bottom - window.innerHeight + 20; // Add some extra margin
+                yesButton.style.marginTop = `calc(10px + ${marginTop}px)`;
+            } else {
+                // Otherwise, reset margin
+                yesButton.style.marginTop = '10px';
+            }
         });
 
         yesButton.addEventListener("click", function() {
             message.innerText = "Oh yay!";
             yesButton.style.display = "none";
             noButton.style.display = "none";
+            defaultGif.style.display = "none"; // Hide the default GIF
+            yesGif.style.display = "inline"; // Show the "Yes" GIF
         });
     </script>
 </body>
